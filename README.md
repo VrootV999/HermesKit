@@ -9,5 +9,10 @@ Designed for both source-code obfuscation and binary post-processing, HermesKit 
 ---
 # Acknowledgment
 
+A special thank you to the open-source projects and libraries that make HermesKit possible:
+- Cobra: [Cobra](https://github.com/spf13/cobra) 
+- Cobra Cli: [Cobra Cli](https://github.com/spf13/cobra-cli)
+- Bubble Tea: [Bubble Tea](https://github.com/charmbracelet/bubbletea)
+- Lip Gloss: [Lip Gloss](https://github.com/charmbracelet/lipgloss)
 
 --- 
