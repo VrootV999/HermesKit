@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var gui = &cobra.Command{Use: "--gui", Short: "Open GUI", Long: `Open GUI version of HermesKit`, Run: startGui,}
+var gui = &cobra.Command{Use: "--gui", Short: "GUI HermesKit", Long: `Open GUI version of HermesKit`, Run: startGui,}
 
 func init(){
 	rootCmd.AddCommand(gui)
