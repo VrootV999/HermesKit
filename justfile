@@ -42,7 +42,7 @@ build:
   # Copy-Item "Core\target\debug\hermes_core.lib" "Lib\" -Force
 
   @Write-Host "Creating build directory..."
-  if (!(Test-Path "Build\Debug")) { 
+  if (!(Test-Path "Build\Debug")) {
     New-Item -ItemType Directory -Force -Path "Build\Debug" | Out-Null
   }
 
