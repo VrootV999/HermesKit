@@ -43,7 +43,7 @@ build:
 
   @Write-Host "Creating build directory..."
   if (!(Test-Path "Build\Debug")) { 
-      New-Item -ItemType Directory -Force -Path "Build\Debug" | Out-Null
+    New-Item -ItemType Directory -Force -Path "Build\Debug" | Out-Null
   }
 
   @Write-Host "Building Go Binary (Debug)..."
