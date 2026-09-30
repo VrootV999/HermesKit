@@ -23,7 +23,7 @@ jobs:
       - name: Test Go
         run: |
           go get .
-          go install gotestsum
+          go install gotest.tools/gotestsum@latest
           gotestsum
 
       - name: Setup Rust
