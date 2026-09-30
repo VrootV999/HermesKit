@@ -7,6 +7,11 @@ HermesKit is a comprehensive, modular Red Team framework engineered for advanced
 Designed for both source-code obfuscation and binary post-processing, HermesKit provides operators with the tools necessary to test detection engineering resilience, understand defensive blind spots, and simulate sophisticated adversary tactics across user-mode and kernel-mode environments.
 
 ---
+# Installation
+<!-- Building from source -->
+<!-- Using Release Binary -->
+
+---
 # Acknowledgment
 
 A special thank you to the open-source projects and libraries that make HermesKit possible:
