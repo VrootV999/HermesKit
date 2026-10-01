@@ -171,14 +171,14 @@ release:
 [linux]
 [unix]
 [macos]
-test gofile=".":
+test gofile="":
   @echo "Testing"
   cd Core/ && cargo check
   gotestsum {{gofile}}
 
 # Test the Code for Windows Systems
 [windows]
-test gofile=".":
+test gofile="":
   @Write-Host "Testing"
   Set-Location Core
   cargo check
