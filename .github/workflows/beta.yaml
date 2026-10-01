@@ -1,6 +1,5 @@
-name: test-code
+name: Make a Beta Release
 
-on: push
 jobs:
   job1:
     name: Testing
@@ -32,3 +31,28 @@ jobs:
       - name: Test Code
         run: |
           just test
+
+      - name: Build Code
+        run: |
+          just Beta true
+
+      - name: Package Source Code
+        run: |
+          zip -r Build/Release/HermesKit_source.zip . \
+            -x ".git/*" \
+            -x ".github/*" \
+            -x "target/*" \
+            -x "Build/*" \
+            -x "Lib/*" \
+            -x "Include/*"
+
+      - name: Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            Build/Debug/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

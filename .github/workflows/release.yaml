@@ -1,15 +1,9 @@
-name: Make A release
+name: Make a Stable Release
 
 jobs:
   job1:
     name: Testing
-    strategy:
-      matrix: 
-        os:
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,15 +13,8 @@ jobs:
         with:
           go-version: stable
 
-      - name: Test Go
-        run: |
-          go get .
-          go install gotest.tools/gotestsum@latest
-          gotestsum
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
-
 
       - name: Setup Cache Dependency
         uses: actions/cache@v4
@@ -44,3 +31,28 @@ jobs:
       - name: Test Code
         run: |
           just test
+
+      - name: Build Code
+        run: |
+          just Stable true
+
+      - name: Package Source Code
+        run: |
+          zip -r Build/Release/HermesKit_source.zip . \
+            -x ".git/*" \
+            -x ".github/*" \
+            -x "target/*" \
+            -x "Build/*" \
+            -x "Lib/*" \
+            -x "Include/*"
+
+      - name: Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            Build/Release/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

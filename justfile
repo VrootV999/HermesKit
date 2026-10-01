@@ -5,123 +5,216 @@ set shell := ['sh', '-cu']
 [windows]
 set shell := ["powershell.exe","-c"]
 
-# Build the Project for darwin
-[linux]
 [macos]
-build:
-  @echo "Generating C Header with cbindgen..."
+set shell := ["zsh", "-cu"]
+
+[arg("profile", pattern="Beta|Stable")]
+[arg("ci", pattern="true|false")]
+build profile="Stable" ci="false":
+  if ci == "true" {
+  @just setup
+
+  @echo "Creating Required Directories"
+  mkdir -p Lib Include Build/{{ profile }}
+
+  @echo "Generating C Header with cbindgen."
+  cd Core && cbindgen --lang c --output ../Include/HermesCore.h
+  
+  @echo "Building For Windows x86_64"
+  cd Core && cargo build --target="x86_64-pc-windows-msvc"
+  cp Core/target/x86_64-pc-windows-msvc/debug/Hermes_Core.lib Lib/
+  GOOS=windows GOARCH=amd64 go build -o Build/{{ profile }}/HermesKit-Beta-windows-amd64.exe main.go
+  rm Lib/Hermes_Core.lib
+
+  @echo "Building For Windows x86"
+  cd Core && cargo build --target="i686-pc-windows-msvc"
+  cp Core/target/i686-pc-windows-msvc/debug/Hermes_Core.lib Lib/
+  GOOS=windows GOARCH=386 go build -o Build/{{ profile }}/HermesKit-Beta-windows-x86.exe main.go
+  rm Lib/Hermes_Core.lib
+
+  @echo "Building For Windows armv8"
+  cd Core && cargo build --target="aarch64-pc-windows-msvc"
+  cp Core/target/aarch64-pc-windows-msvc/debug/Hermes_Core.lib Lib/
+  GOOS=windows GOARCH=arm64 go build -o Build/{{ profile }}/HermesKit-Beta-windows-arm64.exe main.go
+  rm Lib/Hermes_Core.lib
+
+  @echo "Building For Linux x86_64"
+  cd Core && cargo build --target="x86_64-unknown-linux-gnu"
+  cp Core/target/x86_64-unknown-linux-gnu/debug/libHermes_Core.a Lib/
+  GOOS=linux GOARCH=amd64 go build -o Build/{{ profile }}/HermesKit-Beta-linux-amd64 main.go
+  rm Lib/libHermes_Core.a
+ 
+  @echo "Building For Linux x86"
+  cd Core && cargo build --target="i686-unknown-linux-gnu"
+  cp Core/target/i686-unknown-linux-gnu/debug/libHermes_Core.a Lib/
+  GOOS=linux GOARCH=386 go build -o Build/{{ profile }}/HermesKit-Beta-linux-x86 main.go
+  rm Lib/libHermes_Core.a
+
+  @echo "Building For Linux armv8"
+  cd Core && cargo build --target="aarch64-unknown-linux-gnu"
+  cp Core/target/aarch64-unknown-linux-gnu/debug/libHermes_Core.a Lib/
+  GOOS=linux GOARCH=arm64 go build -o Build/{{ profile }}/HermesKit-Beta-linux-arm64 main.go
+  rm Lib/libHermes_Core.a
+
+  @echo "Building For Linux armv7"
+  cd Core && cargo build --target="armv7-unknown-linux-gnueabihf"
+  cp Core/target/armv7-unknown-linux-gnueabihf/debug/libHermes_Core.a Lib/
+  GOOS=linux GOARCH=arm GOARM=7 go build -o Build/{{ profile }}/HermesKit-Beta-linux-armv7 main.go
+  rm Lib/libHermes_Core.a
+
+  @echo "Building For Macos x86_64"
+  cd Core && cargo build --target="x86_64-apple-darwin"
+  cp Core/target/x86_64-apple-darwin/debug/libHermes_Core.a Lib/
+  GOOS=darwin GOARCH=amd64 go build -o Build/{{ profile }}/HermesKit-Beta-darwin-amd64 main.go
+  rm Lib/libHermes_Core.a
+
+  @echo "Building For Macos armv8"
+  cd Core && cargo build --target="aarch64-apple-darwin"
+  cp Core/target/aarch64-apple-darwin/debug/libHermes_Core.a Lib/
+  GOOS=darwin GOARCH=arm64 go build -o Build/{{ profile }}/HermesKit-Beta-darwin-arm64 main.go
+  rm Lib/libHermes_Core.a
+
+  @echo "Beta build completed"
+  } else {
+  if profile == "Beta" {
+  @just debug
+  } else {
+  @just release
+  }
+  }
+
+# Build Debug Version for Darwin Systems
+[linux]
+[unix]
+[macos]
+debug:
+  @echo "Creating Required Directories"
+  mkdir -p Lib Include Build/Debug
+
+  @echo "Generating C Header with cbindgen"
   cd Core && cbindgen --lang c --output ../Include/HermesCore.h
 
-  @echo "Building Rust Library (Debug)..."
+  @echo "Building Rust Library (Debug)"
   cd Core && cargo build
 
-  @echo "Copying static library artifacts..."
-  mkdir -p Lib Include
-  cp Core/target/debug/libhermes_core.a Lib/
+  @echo "Copying static library artifacts"
+  cp Core/target/debug/libhermes_Core.a Lib/
 
-  @echo "Building Go Binary (Debug)..."
-  mkdir -p Build/Debug
+  @echo "Building Go Binary (Debug)"
   go build -o Build/Debug/HermesKit main.go
   @echo "Debug build complete!"
 
-# Build the Project for Windows
+# Build Debug Version for Windows Systems
 [windows]
-build:
-  @Write-Host "Generating C Header with cbindgen..."
-  Set-Location Core
-  cbindgen --lang c --output "..\Include\HermesCore.h"
-  
-  @Write-Host "Building Rust Static Library (Debug)..."
-  cargo build
-  Set-Location ..
-
-  @Write-Host "Copying static library artifacts..."
+debug:
+  @Write-Host "Creating Required Directories"
   if (!(Test-Path "Lib")) { New-Item -ItemType Directory -Force -Path "Lib" | Out-Null }
   if (!(Test-Path "Include")) { New-Item -ItemType Directory -Force -Path "Include" | Out-Null }
+  if (!(Test-Path "Build\Debug")) { New-Item -ItemType Directory -Force -Path "Build\Debug" | Out-Null }
 
-  # Copy-Item "Core\target\debug\hermes_core.lib" "Lib\" -Force
+  @Write-Host "Generating C Header with cbindgen"
+  Set-Location Core; cbindgen --lang c --output "..\Include\HermesCore.h"
+  
+  @Write-Host "Building Rust Static Library (Debug)"
+  Set-Location Core; cargo build
 
-  @Write-Host "Creating build directory..."
-  if (!(Test-Path "Build\Debug")) {
-    New-Item -ItemType Directory -Force -Path "Build\Debug" | Out-Null
-  }
+  Copy-Item "Core\target\debug\Hermes_Core.lib" "Lib" -Force
 
-  @Write-Host "Building Go Binary (Debug)..."
+  @Write-Host "Building Go Binary (Debug)"
   go build -o Build/Debug/HermesKit.exe main.go
   
   @Write-Host "Debug build complete!" -ForegroundColor Green
 
-# Build the Release Version
+# Build Release Version for Darwin Systems
 [linux]
+[unix]
 [macos]
 release:
-  @echo "Generating C Header with cbindgen..."
+  @echo "Creating Required Directories"
+  mkdir -p Lib Include Build/Release
+
+  @echo "Generating C Header with cbindgen"
   cd Core && cbindgen --lang c --output ../Include/HermesCore.h
 
-  @echo "Building Rust Library (Release)..."
+  @echo "Building Rust Library (Release)"
   cd Core && cargo build --release
 
-  @echo "Copying static library artifacts..."
-  mkdir -p Lib Include
-  cp Core/target/release/libhermes_core.a Lib/
+  @echo "Copying static library artifacts"
+  cp Core/target/release/libhermes_Core.a Lib/
 
-  @echo "Building Go Binary (Release)..."
-  mkdir -p Build/Release
+  @echo "Building Go Binary (Release)"
   go build -o Build/Release/HermesKit main.go
   @echo "Release build complete!"
 
-# Build the Release Version
+# Build Release Version for Windows Systems
 [windows]
 release:
-  @Write-Host "Generating C Header with cbindgen..."
-  Set-Location Core
-  cbindgen --lang c --output "..\Include\HermesCore.h"
-  
-  @Write-Host "Building Rust Static Library (Release)..."
-  cargo build --release
-  Set-Location ..
-
-  @Write-Host "Copying static library artifacts..."
+  @Write-Host "Creating Required Directories"
   if (!(Test-Path "Lib")) { New-Item -ItemType Directory -Force -Path "Lib" | Out-Null }
   if (!(Test-Path "Include")) { New-Item -ItemType Directory -Force -Path "Include" | Out-Null }
+  if (!(Test-Path "Build\Release")) { New-Item -ItemType Directory -Force -Path "Build\Release" | Out-Null }
 
-  # Copy-Item "Core\target\debug\hermes_core.lib" "Lib\" -Force
+  @Write-Host "Generating C Header with cbindgen"
+  Set-Location Core; cbindgen --lang c --output "..\Include\HermesCore.h"
+  
+  @Write-Host "Building Rust Static Library (Release)"
+  Set-Location Core; cargo build --release
 
-  @Write-Host "Creating build directory..."
-  if (!(Test-Path "Build\Release")) { 
-      New-Item -ItemType Directory -Force -Path "Build\Release" | Out-Null 
-  }
+  Copy-Item "Core\target\release\Hermes_Core.lib" "Lib" -Force
 
-  @Write-Host "Building Go Binary (Release)..."
+  @Write-Host "Building Go Binary (Release)"
   go build -o Build/Release/HermesKit.exe main.go
   
   @Write-Host "Release build complete!" -ForegroundColor Green
 
-# Run Tests on Darwin
+# Test the Code for Darwin Systems
 [linux]
+[unix]
 [macos]
-test gofile="":
+test gofile=".":
   @echo "Testing"
   cd Core/ && cargo check
   gotestsum {{gofile}}
 
-# Run Tests on Windows
+# Test the Code for Windows Systems
 [windows]
-test gofile="":
+test gofile=".":
   @Write-Host "Testing"
   Set-Location Core
   cargo check
   Set-Location ..
   gotestsum {{gofile}}
-# Clean build artifacts darwin
+
+# Clean Build Artifacts for Darwin Systems
 [linux]
+[unix]
 [macos]
 clean:
   cd Core && cargo clean
   rm -rf Build Lib Include
 
-# Clean Build artifacts Windows
+# Clean Build Artifacts for Windows Systems
 [windows]
 clean:
   Set-Location Core && cargo clean
   Remove-Item -Path Build, Lib, Include -Recurse -Force -ErrorAction SilentlyContinue
+
+# Setup for installation
+setup:
+  @echo "Setup Rust"
+  rustup target add x86_64-pc-windows-msvc
+  rustup target add i686-pc-windows-msvc
+  rustup target add aarch64-pc-windows-msvc
+  rustup target add x86_64-unknown-linux-gnu
+  rustup target add i686-unknown-linux-gnu
+  rustup target add aarch64-unknown-linux-gnu
+  rustup target add armv7-unknown-linux-gnueabihf
+  rustup target add x86_64-apple-darwin
+  rustup target add aarch64-apple-darwin
+
+  @echo "Setup GO"
+  go mod download
+  go install gotest.tools/gotestsum@latest
+
+  @echo ""
+  @echo "Setup Done"
