@@ -1,6 +1,6 @@
 default: build
 [linux]
-set shell := ['sh', '-cu']
+set shell := ["sh", "-cu"]
 
 [windows]
 set shell := ["powershell.exe","-c"]
