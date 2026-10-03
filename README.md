@@ -8,8 +8,13 @@ Designed for both source-code obfuscation and binary post-processing, HermesKit 
 
 ---
 # Installation
-<!-- Building from source -->
-<!-- Using Release Binary -->
+## Build From Source
+
+```bash
+git clone https://github.com/VrootV999/HermesKit.git
+cd HermesKit
+just
+```
 
 ---
 # Acknowledgment

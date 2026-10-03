@@ -74,7 +74,7 @@ build profile="Stable" ci="false":
   GOOS=darwin GOARCH=arm64 go build -o Build/{{ profile }}/HermesKit-Beta-darwin-arm64 main.go
   rm Lib/libHermes_Core.a
 
-  @echo "Beta build completed"
+  @echo "{{ profile }} build completed"
   } else {
   if profile == "Beta" {
   @just debug
