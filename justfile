@@ -8,12 +8,7 @@ set shell := ["powershell.exe","-c"]
 [macos]
 set shell := ["zsh", "-cu"]
 
-[arg("profile", pattern="Beta|Stable")]
-[arg("ci", pattern="true|false")]
-build profile="Stable" ci="false":
-  if ci == "true" {
-  @just setup
-
+ci profile="Release|Debug":
   @echo "Creating Required Directories"
   mkdir -p Lib Include Build/{{ profile }}
 
@@ -73,15 +68,7 @@ build profile="Stable" ci="false":
   cp Core/target/aarch64-apple-darwin/debug/libHermes_Core.a Lib/
   GOOS=darwin GOARCH=arm64 go build -o Build/{{ profile }}/HermesKit-Beta-darwin-arm64 main.go
   rm Lib/libHermes_Core.a
-
   @echo "{{ profile }} build completed"
-  } else {
-  if profile == "Beta" {
-  @just debug
-  } else {
-  @just release
-  }
-  }
 
 # Build Debug Version for Darwin Systems
 [linux]
@@ -98,7 +85,7 @@ debug:
   cd Core && cargo build
 
   @echo "Copying static library artifacts"
-  cp Core/target/debug/libhermes_Core.a Lib/
+  cp Core/target/debug/libHermes_Core.a Lib/
 
   @echo "Building Go Binary (Debug)"
   go build -o Build/Debug/HermesKit main.go
@@ -129,7 +116,8 @@ debug:
 [linux]
 [unix]
 [macos]
-release:
+build:
+  @just setup
   @echo "Creating Required Directories"
   mkdir -p Lib Include Build/Release
 
@@ -140,7 +128,7 @@ release:
   cd Core && cargo build --release
 
   @echo "Copying static library artifacts"
-  cp Core/target/release/libhermes_Core.a Lib/
+  cp Core/target/release/libHermes_Core.a Lib/
 
   @echo "Building Go Binary (Release)"
   go build -o Build/Release/HermesKit main.go
@@ -148,7 +136,8 @@ release:
 
 # Build Release Version for Windows Systems
 [windows]
-release:
+build:
+  @just setup
   @Write-Host "Creating Required Directories"
   if (!(Test-Path "Lib")) { New-Item -ItemType Directory -Force -Path "Lib" | Out-Null }
   if (!(Test-Path "Include")) { New-Item -ItemType Directory -Force -Path "Include" | Out-Null }
