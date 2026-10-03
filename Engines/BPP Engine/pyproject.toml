@@ -1,7 +1,11 @@
 [project]
-name = "bpp engine"
+name = "BPP"
 version = "0.1.0"
-description = "Add your description here"
+description = "Binary Post Processing Engine"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "jinja2>=3.1.6",
+    "lief>=1.0.0",
+    "pycryptodome>=3.23.0",
+]
