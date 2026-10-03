@@ -8,7 +8,7 @@ set shell := ["powershell.exe","-c"]
 [macos]
 set shell := ["zsh", "-cu"]
 
-ci profile="Release|Debug":
+ci profile:
   @echo "Creating Required Directories"
   mkdir -p Lib Include Build/{{ profile }}
 
@@ -16,57 +16,57 @@ ci profile="Release|Debug":
   cd Core && cbindgen --lang c --output ../Include/HermesCore.h
   
   @echo "Building For Windows x86_64"
-  cd Core && cargo build --target="x86_64-pc-windows-msvc"
+  cd Core && cargo build --target="x86_64-pc-windows-msvc" {{ if profile == "Release" { "--release" } else { "" } }}
   cp Core/target/x86_64-pc-windows-msvc/debug/Hermes_Core.lib Lib/
-  GOOS=windows GOARCH=amd64 go build -o Build/{{ profile }}/HermesKit-Beta-windows-amd64.exe main.go
+  GOOS=windows GOARCH=amd64 go build -o Build/{{ profile }}/HermesKit-{{ profile }}-windows-amd64.exe main.go
   rm Lib/Hermes_Core.lib
 
   @echo "Building For Windows x86"
-  cd Core && cargo build --target="i686-pc-windows-msvc"
+  cd Core && cargo build --target="i686-pc-windows-msvc" {{ if profile == "Release" { "--release" } else {""} }}
   cp Core/target/i686-pc-windows-msvc/debug/Hermes_Core.lib Lib/
-  GOOS=windows GOARCH=386 go build -o Build/{{ profile }}/HermesKit-Beta-windows-x86.exe main.go
+  GOOS=windows GOARCH=386 go build -o Build/{{ profile }}/HermesKit-{{ profile }}-windows-x86.exe main.go
   rm Lib/Hermes_Core.lib
 
   @echo "Building For Windows armv8"
-  cd Core && cargo build --target="aarch64-pc-windows-msvc"
+  cd Core && cargo build --target="aarch64-pc-windows-msvc" {{ if profile == "Release" { "--release" } else {""} }} 
   cp Core/target/aarch64-pc-windows-msvc/debug/Hermes_Core.lib Lib/
-  GOOS=windows GOARCH=arm64 go build -o Build/{{ profile }}/HermesKit-Beta-windows-arm64.exe main.go
+  GOOS=windows GOARCH=arm64 go build -o Build/{{ profile }}/HermesKit-{{ profile }}-windows-arm64.exe main.go
   rm Lib/Hermes_Core.lib
 
   @echo "Building For Linux x86_64"
-  cd Core && cargo build --target="x86_64-unknown-linux-gnu"
+  cd Core && cargo build --target="x86_64-unknown-linux-gnu" {{ if profile == "Release" { "--release" } else {""} }}
   cp Core/target/x86_64-unknown-linux-gnu/debug/libHermes_Core.a Lib/
-  GOOS=linux GOARCH=amd64 go build -o Build/{{ profile }}/HermesKit-Beta-linux-amd64 main.go
+  GOOS=linux GOARCH=amd64 go build -o Build/{{ profile }}/HermesKit-{{ profile }}-linux-amd64 main.go
   rm Lib/libHermes_Core.a
  
   @echo "Building For Linux x86"
-  cd Core && cargo build --target="i686-unknown-linux-gnu"
+  cd Core && cargo build --target="i686-unknown-linux-gnu" {{ if profile == "Release" { "--release" } else {""} }}
   cp Core/target/i686-unknown-linux-gnu/debug/libHermes_Core.a Lib/
-  GOOS=linux GOARCH=386 go build -o Build/{{ profile }}/HermesKit-Beta-linux-x86 main.go
+  GOOS=linux GOARCH=386 go build -o Build/{{ profile }}/HermesKit-{{ profile }}-linux-x86 main.go
   rm Lib/libHermes_Core.a
 
   @echo "Building For Linux armv8"
-  cd Core && cargo build --target="aarch64-unknown-linux-gnu"
+  cd Core && cargo build --target="aarch64-unknown-linux-gnu" {{ if profile == "Release" { "--release" } else {""} }}
   cp Core/target/aarch64-unknown-linux-gnu/debug/libHermes_Core.a Lib/
-  GOOS=linux GOARCH=arm64 go build -o Build/{{ profile }}/HermesKit-Beta-linux-arm64 main.go
+  GOOS=linux GOARCH=arm64 go build -o Build/{{ profile }}/HermesKit-{{ profile }}-linux-arm64 main.go
   rm Lib/libHermes_Core.a
 
   @echo "Building For Linux armv7"
-  cd Core && cargo build --target="armv7-unknown-linux-gnueabihf"
+  cd Core && cargo build --target="armv7-unknown-linux-gnueabihf" {{ if profile == "Release" { "--release" } else {""} }}
   cp Core/target/armv7-unknown-linux-gnueabihf/debug/libHermes_Core.a Lib/
-  GOOS=linux GOARCH=arm GOARM=7 go build -o Build/{{ profile }}/HermesKit-Beta-linux-armv7 main.go
+  GOOS=linux GOARCH=arm GOARM=7 go build -o Build/{{ profile }}/HermesKit-{{ profile }}-linux-armv7 main.go
   rm Lib/libHermes_Core.a
 
   @echo "Building For Macos x86_64"
-  cd Core && cargo build --target="x86_64-apple-darwin"
+  cd Core && cargo build --target="x86_64-apple-darwin" {{ if profile == "Release" { "--release" } else {""} }}
   cp Core/target/x86_64-apple-darwin/debug/libHermes_Core.a Lib/
-  GOOS=darwin GOARCH=amd64 go build -o Build/{{ profile }}/HermesKit-Beta-darwin-amd64 main.go
+  GOOS=darwin GOARCH=amd64 go build -o Build/{{ profile }}/HermesKit-{{ profile }}-darwin-amd64 main.go
   rm Lib/libHermes_Core.a
 
   @echo "Building For Macos armv8"
-  cd Core && cargo build --target="aarch64-apple-darwin"
+  cd Core && cargo build --target="aarch64-apple-darwin" {{ if profile == "Release" { "--release" } else {""} }}
   cp Core/target/aarch64-apple-darwin/debug/libHermes_Core.a Lib/
-  GOOS=darwin GOARCH=arm64 go build -o Build/{{ profile }}/HermesKit-Beta-darwin-arm64 main.go
+  GOOS=darwin GOARCH=arm64 go build -o Build/{{ profile }}/HermesKit-{{ profile }}-darwin-arm64 main.go
   rm Lib/libHermes_Core.a
   @echo "{{ profile }} build completed"
 
@@ -207,3 +207,4 @@ setup:
 
   @echo ""
   @echo "Setup Done"
+
