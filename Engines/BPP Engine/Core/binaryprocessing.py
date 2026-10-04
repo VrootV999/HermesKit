@@ -12,25 +12,38 @@ def filetypeanalyser(file: str) -> str:
         elif header[:8] in ["FEEDFACE", "CEFAEDFE", "FEEDFACF", "CFFAEDFE", "CAFEBABE"]:
             return "MACHO"
         else: 
-            return "Not a Supported File type"
+            print("Not a Supported File type")
+            return ""
     except FileNotFoundError: 
         print("This File does not exist")
-        exit(1)
+        return ""
+    except IsADirectoryError:
+        print("Input provided is a Directory not a file")
+        return ""
 
 def process_binary(file: str):
     try: 
-        with open(file,"rb") as file:
-            binary = lief.parse(file)
-    except FileNotFoundError as e:
+        with open(file,"rb") as f:
+            binary = lief.parse(f)
+        return binary
+    except FileNotFoundError:
         print("This File does not exist")
-        exit(1)
+    except IsADirectoryError:
+        print("Input provided is a Directory not a file")
+
+# def process_binary2(file: str):
+#     try: 
+#         parse_config = lief.PE.ParserConfig()
+#         parse_config.parse_signature = False
+#         pe = lief.PE.parse(file,parse_config)
+#         with open(file,"rb") as f:
 
 
 def main():
     try: 
         inputs = input("Give location of file: ")
-        file = filetypeanalyser(inputs)
-        print(file)
+        # file = filetypeanalyser(inputs)
+        # print(file)
         process_binary(inputs)
     except KeyboardInterrupt:
         print("\nInterrupt Detected Exitting...")

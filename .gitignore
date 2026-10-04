@@ -9,3 +9,5 @@ Include/
 Lib
 .venv
 Testing/
+__pycache__/
+uv.lock
