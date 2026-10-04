@@ -30,24 +30,3 @@ def process_binary(file: str):
         print("This File does not exist")
     except IsADirectoryError:
         print("Input provided is a Directory not a file")
-
-# def process_binary2(file: str):
-#     try: 
-#         parse_config = lief.PE.ParserConfig()
-#         parse_config.parse_signature = False
-#         pe = lief.PE.parse(file,parse_config)
-#         with open(file,"rb") as f:
-
-
-def main():
-    try: 
-        inputs = input("Give location of file: ")
-        # file = filetypeanalyser(inputs)
-        # print(file)
-        process_binary(inputs)
-    except KeyboardInterrupt:
-        print("\nInterrupt Detected Exitting...")
-        exit(1)
-
-if __name__ == "__main__":
-    main()

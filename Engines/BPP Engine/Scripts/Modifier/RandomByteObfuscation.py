@@ -55,15 +55,3 @@ def random_obfuscate(location: str,outdir: str):
             print("Unknown Binary Detected, Exitting")
     except Exception as e:
         print(f"Unknown Issue {e}")
-
-# def main():
-#     try: 
-#         inputs = input("Give location of file: ")
-#         loc = input("Give location of output: ")
-#         random_obfuscate(inputs, loc)
-#     except KeyboardInterrupt:
-#         print("\nInterrupt Detected Exitting...")
-#         exit(1)
-#
-# if __name__ == "__main__":
-#     main()
