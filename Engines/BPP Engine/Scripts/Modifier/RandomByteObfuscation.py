@@ -1,4 +1,3 @@
-import re
 from Core.binaryprocessing import process_binary
 import lief
 from Core.constants import SUPPORTED
@@ -50,7 +49,6 @@ def random_obfuscate(location: str,outdir: str):
             print("No Binary Provided")
         elif str(type(binary))[8:-2] in SUPPORTED:
             binary_edit(binary,outdir)
-            # test_function(binary,outdir)
         else:
             print("Unknown Binary Detected, Exitting")
     except Exception as e:
