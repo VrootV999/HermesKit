@@ -45,8 +45,9 @@ def random_obfuscate(location: str,outdir: str):
         if binary is None:
             print("No Binary Provided")
         for binaries in SUPPORTED.values():
-            if str(type(binary))[8:-2] in binaries:
-                binary_edit(binary,outdir)
+            for bi in binaries:
+                if str(type(binary))[8:-2] in bi:
+                    binary_edit(binary,outdir)
         else:
             print("Unknown Binary Detected, Exitting")
     except Exception as e:
