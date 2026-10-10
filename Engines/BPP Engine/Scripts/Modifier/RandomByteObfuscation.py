@@ -40,16 +40,19 @@ def binary_edit(binary: lief.PE.Binary | lief.MachO.Binary | lief.ELF.Binary,loc
         print(f"Error {e}")
 
 def random_obfuscate(location: str,outdir: str):
-
     try:
         binary = process_binary(location)
-        print(SUPPORTED)
-        print(str(type(binary))[8:-2])
         if binary is None:
             print("No Binary Provided")
-        elif str(type(binary))[8:-2] in SUPPORTED:
-            binary_edit(binary,outdir)
+        for binaries in SUPPORTED.values():
+            if str(type(binary))[8:-2] in binaries:
+                binary_edit(binary,outdir)
         else:
             print("Unknown Binary Detected, Exitting")
     except Exception as e:
         print(f"Unknown Issue {e}")
+
+
+loc = input("Location of binary: ")
+outdir = input("output location: ")
+random_obfuscate(loc,outdir)
