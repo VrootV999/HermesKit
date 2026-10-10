@@ -63,3 +63,9 @@ def custom_section(
     else:
         binary.add_section(custom)
     binary.write(location)
+
+def header_bloater():
+    print("Bloating the binary")
+
+def header_bloat_stripper():
+    print("Stripping Unecessary Data from the binary")
