@@ -38,7 +38,6 @@ def mask_sections(
     else:
         for section in binary.sections:
             section.name = random.choice(list(random.choice(SAFE_SECTIONS)))
-    # if not isinstance(binary,BufferedWriter):
     binary.write(location)
     print(f"saved as {location}")
     return 
@@ -64,4 +63,3 @@ def custom_section(
     else:
         binary.add_section(custom)
     binary.write(location)
-    
