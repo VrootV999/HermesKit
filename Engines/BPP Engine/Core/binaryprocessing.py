@@ -20,14 +20,16 @@ def filetypeanalyser(file: str) -> str:
             return ""
     except FileNotFoundError: 
         print("This File does not exist")
-        return ""
     except IsADirectoryError:
         print("Input provided is a Directory not a file")
-        return ""
-
-def process_binary(file: str):
+    except Exception as e:
+        print("Error: ",e)
+def process_binary(file: str,specific: bool|None = None):
     try:
         binary_type = filetypeanalyser(file)
+        if specific is not None:
+            f = open(file,"rb")
+            return f
         if binary_type in ["MACHOx86","MACHOarmv8"]:
             config = lief.MachO.ParserConfig()
             config.parse_dyld_bindings = False
@@ -45,4 +47,3 @@ def process_binary(file: str):
         print("This File does not exist")
     except IsADirectoryError:
         print("Input provided is a Directory not a file")
-

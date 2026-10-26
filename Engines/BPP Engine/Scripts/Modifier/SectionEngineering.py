@@ -64,8 +64,20 @@ def custom_section(
         binary.add_section(custom)
     binary.write(location)
 
-def header_bloater():
-    print("Bloating the binary")
+def binary_bloater(
+    # binary: lief.PE.Binary | lief.MachO.Binary | lief.ELF.Binary,
+    binary: str,
+    location: str,
+    size: int | None,
+):
+    try:
+        print("Bloating Binary")
+        b = process_binary(binary,True)
+        with open(location,"wb") as f:
+            if size is not None:
+                f.write(b.read()+urandom(size * 1024 * 1024))
+            else:
+                f.write(b.read()+urandom(12 * 1024 * 1024))
+    finally:
+        b.close()
 
-def header_bloat_stripper():
-    print("Stripping Unecessary Data from the binary")
