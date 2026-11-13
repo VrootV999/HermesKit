@@ -80,4 +80,3 @@ def binary_bloater(
                 f.write(b.read()+urandom(12 * 1024 * 1024))
     finally:
         b.close()
-
