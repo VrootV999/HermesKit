@@ -1,7 +1,7 @@
 from io import BufferedWriter
 import lief
 import random
-from Core.binaryprocessing import filetypeanalyser, process_binary
+from Core.binaryprocessing import ProcessBinary
 from Core.constants import SECTIONS, SAFE_SECTIONS, SUPPORTED, macho_segments, macho_sections
 
 def mask_sections(
@@ -72,11 +72,11 @@ def binary_bloater(
 ):
     try:
         print("Bloating Binary")
-        b = process_binary(binary,True)
+        b = ProcessBinary(binary).process_binary()
         with open(location,"wb") as f:
             if size is not None:
-                f.write(b.read()+urandom(size * 1024 * 1024))
+                f.write(b.read() + urandom(size * 1024 * 1024))
             else:
-                f.write(b.read()+urandom(12 * 1024 * 1024))
+                f.write(b.read() + urandom(12 * 1024 * 1024))
     finally:
         b.close()
