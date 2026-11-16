@@ -1,3 +1,6 @@
+import re
+
+
 SUPPORTED = {
         "PE": ["lief._lief.PE.Binary","lief.PE.Binary"],
         "ELF": ["lief._lief.ELF.Binary","lief.ELF.Binary"],
@@ -64,3 +67,13 @@ class ParseError(BinaryErrors):
         super().__init__(binary)
     def __str__(self):
         return f"Unable to parse {self.bname}"
+
+class ImproperArguement(BinaryErrors):
+    """Raised if Improper argument is provided"""
+    def __init__(self,context: str,req: str,val: str) -> None:
+        self.context = context
+        self.req = req
+        self.val = val
+        super().__init__(context)
+    def __str__(self):
+        return f"{self.context} Required Value:{self.req} Recieved:{self.val}"
