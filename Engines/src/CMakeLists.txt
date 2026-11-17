@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 4.3.4)
+project(hermesengine)
+add_subdirectory(BPP Engine)
+add_subdirectory(SCP Engine)
+add_subdirectory(KBP Engine)
+add_subdirectory(KCP Engine)
+add_subdirectory(Engine Core)

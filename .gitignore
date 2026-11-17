@@ -12,3 +12,15 @@ Testing/
 __pycache__/
 uv.lock
 Engines-Depricated/
+justtemp
+build/
+dependencies/
+cmake-build-*/
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+*.a
+*.lib
+*.exe
